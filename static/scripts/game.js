@@ -1,6 +1,6 @@
 function createNewspaper() {
     newspaperText.innerText = backend.plot.description
-    newspaperPicture.style.backgroundImage = `url('/static/assets/tokens/character/dead_man1.png')`
+    newspaperPicture.style.backgroundImage = `url('static/assets/tokens/character/dead_man1.png')`
 
     setFloating(newspaper)
 }

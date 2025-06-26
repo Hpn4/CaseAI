@@ -7,14 +7,14 @@ function setTestimonyAvatar(url) {
 
 function createTestimony() {
     setFloating(testimony)
-    setTestimonyAvatar('/static/images/unknown.png')
+    setTestimonyAvatar('static/images/unknown.png')
 }
 
 function setTestimonyAgent(agent) {
     if (isAsking)
         return
 
-    setTestimonyAvatar(`/static/assets/tokens/character/${agent.avatar}.png`)
+    setTestimonyAvatar(`static/assets/tokens/character/${agent.avatar}.png`)
     testimonyAgent = agent
 
     if (backend.suspects[agent.suspect.name]) {

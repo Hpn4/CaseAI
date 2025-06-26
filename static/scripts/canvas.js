@@ -23,13 +23,13 @@ const config = {
 };
 
 function preload() {
-    this.load.image('bg', '/static/assets/medieval/smithy/day.jpg')
+    this.load.image('bg', 'static/assets/medieval/smithy/day.jpg')
 
     for (let i = 1; i <= 12; i++) 
-        this.load.image(`girl${i}`, `/static/assets/tokens/character/girl${i}.png`)
+        this.load.image(`girl${i}`, `static/assets/tokens/character/girl${i}.png`)
 
     for (let i = 1; i <= 23; i++)
-        this.load.image(`man${i}`, `/static/assets/tokens/character/man${i}.png`)
+        this.load.image(`man${i}`, `static/assets/tokens/character/man${i}.png`)
 }
 
 function create() {
