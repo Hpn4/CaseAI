@@ -397,12 +397,6 @@ async function watsonHasFound() {
 async function generateGame() {
   console.log("Generate plot...");
   const plot = generatePlot();
-  console.log(plot);
-
-  addWatsonAlibi("Alice", "Claims to be in the Forge from ...");
-  addWatsonAlibi("Bob", "Claims to be in the Shop from ...");
-  addWatsonObservation("Saw Bob in the Forge around");
-  const r = await watsonHasFound();
 
   const res = await chatAIPrompt(createPlot(plot));
 
