@@ -66,7 +66,7 @@ The crime occurs in a forge with these 9 rooms exactly:
       "mindset": ["personality trait", "emotional state"],
       "alibi": "Claims to have been in (the) [room] from [time] to [time]",
       "observations": [
-        "Saw [name] in [room] [exact time]",
+        "Saw [name] in (the) [room] around [exact time]",
         "Heard [stuff] from the forge at [time]",
         "Overheard [name] and [names] about '[suspicious quote]'",
         "Noticed [name] [behavior] near [location]",
@@ -148,4 +148,23 @@ Output format (JSON only, no explanation):
   "alibi": boolean,
   "observations": [array of observation indices that match]
 }`;
+};
+
+const createWatson = (plot) => {
+  return `You are Watson, a medieval detective. Given a JSON murder case, explain how you reached the solution by:
+
+1. **Proving the murderer's alibi is false** - find witness observations that contradict their claimed location/time
+2. **Explaining the murder method** - weapon, location, timing from the solution
+3. **Revealing the motive** - use observations that support the provided motive
+
+**Process:**
+- Cross-reference the murderer's alibi with what others observed
+- Cite specific witness testimony that places them elsewhere
+- Connect observations to the motive
+
+**Medieval tone, no emojis, keep it simple.**
+
+OUTPUT (JSON): {text: "your deduction and explanation"}
+
+INPUT: ${JSON.stringify(plot)}`
 };

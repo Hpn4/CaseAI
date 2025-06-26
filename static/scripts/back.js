@@ -7,9 +7,16 @@ const backend = {
   plot: {}, // pseudo internal
   suspects: {
     // "name": {messages: [{}], alibi: str, observations: [str]}
+  },
+  watson : {
+    alibis: [],
+    observations: []
   }
 };
 
+// var Logic = require('logic-solver');
+
+// Private func
 async function chatAIHistory(messages) {
   const body = {
     model: backend.model.name,
@@ -43,8 +50,35 @@ async function chatAIHistory(messages) {
   }
 }
 
+// Private func
 async function chatAIPrompt(prompt) {
   return chatAIHistory([{role: "system", content: prompt}]);
+}
+
+function formatString(str) {
+  return str.toLowerCase().replace(" ", "_");
+}
+
+function addWatsonAlibi(p, alibi) {
+  const regex = /in (?:the )?(.*?) from */i;
+  const match = alibi.match(regex);
+  if (match) {
+    backend.watson.alibis.push({
+      person: formatString(p),
+      room: formatString(match[1])
+    })
+  }
+}
+
+function addWatsonObservation(obs) {
+  const regex = /Saw (.*?) in (?:the )?(.*?) around */i;
+  const match = obs.match(regex);
+  if (match) {
+    backend.watson.observations.push({
+      person: formatString(match[1]),
+      room: formatString(match[2])
+    })
+  }
 }
 
 async function ask(question, name) {
@@ -68,12 +102,17 @@ async function ask(question, name) {
   const mapper = createMapper(plotSuspect.observations, response.response);
   const feats = await chatAIPrompt(mapper);
 
-  if (feats.alibi)
+  if (feats.alibi) {
     backend.suspects[name].alibi = plotSuspect.alibi;
+    addWatsonAlibi(name, plotSuspect.alibi);
+  }
   
   obss = []
   for (const i of feats.observations) {
     const obs = plotSuspect.observations[i];
+
+    if (i == 0)
+      addWatsonObservation(obs);
 
     if (!backend.suspects[name].observations)
       backend.suspects[name].observations = [];
@@ -206,6 +245,7 @@ professions = [
     "falconer",
 ]
 
+// Private func
 function getRandomElements(arr, n) {
   if (n > arr.length)
     throw new Error("Cannot select more elements than are in the array");
@@ -219,6 +259,7 @@ function getRandomElements(arr, n) {
   return shuffled.slice(0, n);
 }
 
+// Private func
 function randomTime() {
   hour = Math.floor(Math.random() * 24);
   mins = Math.floor(Math.random() * 12) * 5;
@@ -226,6 +267,7 @@ function randomTime() {
   return [hour, mins];
 }
 
+// Private func
 function addTime(hour, mins, deltaMin) {
   let h = hour;
   let m = mins + deltaMin;
@@ -248,6 +290,7 @@ function addTime(hour, mins, deltaMin) {
   return [h, m]
 }
 
+// Private func
 function generatePlot() {
   const nmbSuspects = 4;
 
@@ -312,9 +355,54 @@ function generatePlot() {
   }
 }
 
+async function getEndSpeech() {
+  return chatAIPrompt(createWatson(backend.plot));
+}
+
+async function watsonHasFound() {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const pl = window.pl;
+      const session = pl.create();
+
+      const rules = `
+        \n
+        liar(Person) :-
+          alibi(Person, Room1),
+          observed(Person, Room2),
+          Room1 \\= Room2.
+      `;
+
+      // We add all the facts observed by Watson
+      let facts = "";
+      backend.watson.alibis.forEach(a => {
+        facts += `alibi(${a.person}, ${a.room}).\n`;
+      });
+      backend.watson.observations.forEach(o => {
+        facts += `observed(${o.person}, ${o.room}).\n`;
+      });
+
+      session.consult(facts + rules);
+      session.query("liar(Person).");
+      session.answers(answer => {
+        if (answer === false)
+          resolve(false);
+        else
+          resolve(true);
+      });
+    }, 100)
+ });
+}
+
 async function generateGame() {
   console.log("Generate plot...");
   const plot = generatePlot();
+  console.log(plot);
+
+  addWatsonAlibi("Alice", "Claims to be in the Forge from ...");
+  addWatsonAlibi("Bob", "Claims to be in the Shop from ...");
+  addWatsonObservation("Saw Bob in the Forge around");
+  const r = await watsonHasFound();
 
   const res = await chatAIPrompt(createPlot(plot));
 
