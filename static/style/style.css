@@ -1,20 +1,20 @@
 @font-face {
     font-family: 'CustomFont';
-    src: url('static/fonts/BarberChop.otf') format('opentype');
+    src: url('../../static/fonts/BarberChop.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'CustomFont2';
-    src: url('static/fonts/JMH\ Typewriter.otf') format('opentype');
+    src: url('../../static/fonts/JMH\ Typewriter.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'CustomFont3';
-    src: url('static/fonts/WaHandwriting-Regular.ttf') format('truetype');
+    src: url('../../static/fonts/WaHandwriting-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
@@ -199,7 +199,7 @@ canvas {
 }
 
 #newspaper, #testimony, .note {
-    background-image: url('/static/images/newspaper.png');
+    background-image: url('../../static/images/newspaper.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -289,7 +289,7 @@ canvas {
 #testimony {
     width: 15vw;
     height: 40vh;
-    background-image: url('/static/images/testimony.png');
+    background-image: url('../../static/images/testimony.png');
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -349,7 +349,7 @@ canvas {
     width: 20%;
     height: 20%;
     align-items: center;
-    background-image: url('static/images/note.png');
+    background-image: url('../../static/images/note.png');
 }
 
 .note-title, .note-text {
@@ -382,7 +382,7 @@ canvas {
 .picture {
     width: 8vw;
     aspect-ratio: 886/1012;
-    background-image: url('static/images/frame.png');
+    background-image: url('../../static/images/frame.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
