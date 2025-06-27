@@ -14,8 +14,9 @@ playButton.onclick = async function() {
 
     setView(Views.EMPTY)
     setSubtitle('Generating scenario... This will take around 30 seconds.')
-
     await generateGame()
+    console.log('Generating end speech...')
+    await generateEndSpeech()
 
     setView(Views.GAME)
     
@@ -35,14 +36,15 @@ document.addEventListener('keydown', (e) => {
     if (document.activeElement.tagName === 'INPUT')
         return
     
-    if (currentView.name === Views.GAME.name)
+    if (currentView.name === Views.GAME.name || currentView.name === Views.END.name)
         setView(Views.BOARD)
     else if (currentView.name === Views.BOARD.name)
-        setView(Views.GAME)
+        setView(backend.ended ? Views.END : Views.GAME)
 })
 
 addViewCallback(Views.GAME, () => {
-    setSubtitle('QUESTION SUSPECTS !')
+    if (!backend.ended)
+        setSubtitle('QUESTION SUSPECTS !')
     playSound(Sounds.WOOSH)
 })
 

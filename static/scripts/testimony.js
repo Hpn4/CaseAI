@@ -55,6 +55,9 @@ testimonyInput.addEventListener('keydown', async (e) => {
     isAsking = false
 
     playSound(Sounds.GIBBERISH_0)
+
+    if (!backend.watson_found)
+        watsonHasFound()
 })
 
 testimonyAccuse.onclick = () => {
@@ -63,12 +66,14 @@ testimonyAccuse.onclick = () => {
 
     if (testimonyAgent.suspect.name === backend.plot.solution.murderer) {
         setSubtitle('Well done Sherlock!')
-        endText.innerText = `Congrats!\n\n${testimonyAgent.suspect.name} was the MURDERER!\n\nWant to play again ? Press F5.`
     } else {
-        setSubtitle('Better luck next time.')
-        endText.innerText = `. . .\n\nYou jailed an innocent. ${testimonyAgent.suspect.name} had done nothing!\n\nThe murderer was ${backend.plot.solution.murderer}!\n\nWant to play again ? Press F5.`
+        setSubtitle('You jailed an innoncent!')
     }
+
+    endText.innerText = `${backend.end_speech}`
     
+    backend.ended = true
+
     setView(Views.END)
 }
 

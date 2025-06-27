@@ -162,7 +162,7 @@ const createWatson = (plot) => {
 - Cite specific witness testimony that places them elsewhere
 - Connect observations to the motive
 
-**Medieval tone, no emojis, keep it simple.**
+**Medieval-newspaper tone, roleplay, no emojis, keep it simple, don't use markdown.**
 
 OUTPUT (JSON): {text: "your deduction and explanation"}
 

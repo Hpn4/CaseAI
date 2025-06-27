@@ -11,7 +11,10 @@ const backend = {
   watson : {
     alibis: [],
     observations: []
-  }
+  },
+  end_speech : null,
+  ended : false,
+  watson_found : false,
 };
 
 // var Logic = require('logic-solver');
@@ -355,8 +358,8 @@ function generatePlot() {
   }
 }
 
-async function getEndSpeech() {
-  return chatAIPrompt(createWatson(backend.plot));
+async function generateEndSpeech() {
+  backend.end_speech = (await chatAIPrompt(createWatson(backend.plot))).text;
 }
 
 async function watsonHasFound() {
@@ -384,6 +387,7 @@ async function watsonHasFound() {
 
       session.consult(facts + rules);
       session.query("liar(Person).");
+
       session.answers(answer => {
         if (answer === false)
           resolve(false);
