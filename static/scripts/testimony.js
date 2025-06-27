@@ -48,6 +48,10 @@ testimonyInput.addEventListener('keydown', async (e) => {
     for (let obs of resp.new_obs) {
         createNote('observation', testimonyAgent.suspect.name, obs)
     }
+    
+    if (resp.trash) {
+        createNote('trash', testimonyAgent.suspect.name, resp.trash)
+    }
 
     testimonyText.innerText = resp.response
 
@@ -57,7 +61,12 @@ testimonyInput.addEventListener('keydown', async (e) => {
     playSound(Sounds.GIBBERISH_0)
 
     if (!backend.watson_found)
-        watsonHasFound()
+    {
+        if (await watsonHasFound()) {
+            createNote('watson', null, null)
+            backend.watson_found = true
+        }
+    }
 })
 
 testimonyAccuse.onclick = () => {
@@ -67,7 +76,7 @@ testimonyAccuse.onclick = () => {
     if (testimonyAgent.suspect.name === backend.plot.solution.murderer) {
         setSubtitle('Well done Sherlock!')
     } else {
-        setSubtitle('You jailed an innoncent!')
+        setSubtitle('You jailed an innocent!')
     }
 
     endText.innerText = `${backend.end_speech}`
