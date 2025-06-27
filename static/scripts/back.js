@@ -59,7 +59,19 @@ async function chatAIPrompt(prompt) {
 }
 
 function formatString(str) {
-  return str.toLowerCase().replace(" ", "_");
+  return str.toLowerCase().replaceAll(" ", "_");
+}
+
+function checkAlibi(plotSuspect, alibi) {
+  const regexTest = /I was in (?:the )?(.*?) from */i;
+  const regexRef = /in (?:the )?(.*?) from */i;
+  
+  const test = alibi.match(regexTest);
+  const ref = plotSuspect.alibi.match(regexRef);
+  if (test && ref)
+    return test[1] === ref[1];
+
+  return false;
 }
 
 function addWatsonAlibi(p, alibi) {
@@ -105,9 +117,14 @@ async function ask(question, name) {
   const mapper = createMapper(plotSuspect.observations, response.response);
   const feats = await chatAIPrompt(mapper);
 
+  // Check again alibi
+  feats.alibi |= checkAlibi(plotSuspect, response.response);
+
   if (feats.alibi) {
+    feats.trash = undefined;
+    if (!backend.suspects[name].alibi)
+      addWatsonAlibi(name, plotSuspect.alibi);
     backend.suspects[name].alibi = plotSuspect.alibi;
-    addWatsonAlibi(name, plotSuspect.alibi);
   }
   
   obss = []
@@ -126,10 +143,14 @@ async function ask(question, name) {
     }
   
   }
-  
+
+  // console.log(feats.trash);
+  // console.log(await watsonHasFound());
+
   return {
     alibi: backend.suspects[name].alibi,
     new_obs: obss,
+    trash: response.trash,
     response: response.response
   };
 };
@@ -364,13 +385,10 @@ async function generateEndSpeech() {
 
 async function watsonHasFound() {
   return new Promise((resolve) => {
-    setTimeout(() => {
       const pl = window.pl;
       const session = pl.create();
 
-      const rules = `
-        \n
-        liar(Person) :-
+      const rules = `liar(Person) :-
           alibi(Person, Room1),
           observed(Person, Room2),
           Room1 \\= Room2.
@@ -385,16 +403,21 @@ async function watsonHasFound() {
         facts += `observed(${o.person}, ${o.room}).\n`;
       });
 
-      session.consult(facts + rules);
-      session.query("liar(Person).");
+      const program = facts + "\n\n" + rules;
 
-      session.answers(answer => {
-        if (answer === false)
-          resolve(false);
-        else
-          resolve(true);
+      session.consult(program, {
+        success: function () {
+          session.query("liar(Person).", {
+            success: function () {
+              session.answer(answer => {
+                resolve((answer && "links" in answer));
+              });
+            },
+            error: function (err) { console.log("Query", err); }
+          });
+        },
+        error: function (err) { console.log("Consult", err); }
       });
-    }, 100)
  });
 }
 
