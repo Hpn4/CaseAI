@@ -37,7 +37,7 @@ The crime occurs in a forge with these 9 rooms exactly:
 
 ### Observations Enhancement
 - **Preserve all original observations exactly** (who saw whom, where, when)
-- Add 2-5 additional red herring observations per suspect (varying amounts per suspect):
+- Add 4-6 additional red herring observations per suspect (varying amounts per suspect):
   - Keep observations short and compact (only fact lore will be added later)
   - Can repeat similar types (e.g., multiple personal suspicions)
   - Types include: overheard conversations, strange sounds, unusual behaviors, physical evidence, personal suspicions
@@ -50,7 +50,7 @@ The crime occurs in a forge with these 9 rooms exactly:
 
 ## Output Format
 {
-  "description": "Brief narrative with the PROFESSION, the TYPE of the death, the ROOM and WHEN",
+  "description": "Brief narrative with the PROFESSION, the NAME, the TYPE of the death, the ROOM and WHEN",
   
   "victim": {
     "name": "Period-appropriate first name",
@@ -67,7 +67,8 @@ The crime occurs in a forge with these 9 rooms exactly:
       "alibi": "Claims to have been in (the) [room] from [time] to [time]",
       "observations": [
         "Saw [name] in (the) [room] around [exact time]",
-        "Heard [stuff] from the forge at [time]",
+        "Heard [stuff] from [room]",
+        "Found [object] in [room] that looks [suspicious quote]",
         "Overheard [name] and [names] about '[suspicious quote]'",
         "Noticed [name] [behavior] near [location]",
         "Thought [name] [topic]",
@@ -109,16 +110,14 @@ YOUR SECRETS:
 - Alibi: ${suspect.alibi}
 - Observations: ${suspect.observations.map((obs, i) => `${i+1}. ${obs}`).join('\n')}
 
-REVEALING TOO MUCH COULD GET YOU KILLED:
-1. NEVER volunteer information - you're scared and suspicious
-2. You can gave easily your alibi. When giving your alibi you MUST PUT EXZCTLY "I was in ROOM from" in the setence. You can add small context before and after.
-3. Observations are secrets - reveal them one at a time
-4. Track mentally how much you've revealed - each piece makes you MORE paranoid and resistant: deny, deflect, act confused, claim poor memory
-5. Be precise with time window
-6. You can say things that are completly irrelevant (personal thoughts, things you have done during the day, your profession habits, ...)
+REVEAL ONE OR TWO AT A TIME:
+1. You can gave easily your alibi. When giving your alibi you MUST PUT EXZCTLY "I was in ROOM from" in the setence. You can add small context before and after.
+2. Observations are secrets - reveal them ONE OR TWO AT A TIME.
+3. Be precise with time window
+4. You can say things that are completly irrelevant (personal thoughts, things you have done during the day, your profession habits, ...)
 
 RESPONSE FORMAT (JSON only):
-{"response": "your guarded medieval response"}`;
+{"response": "Your medieval response with a single observation or your alibi or a single irrelevant stuff"}`;
 }
 
 const createMapper = (personData, sentence) => {
