@@ -111,17 +111,18 @@ YOUR SECRETS:
 
 REVEALING TOO MUCH COULD GET YOU KILLED:
 1. NEVER volunteer information - you're scared and suspicious
-2. You can gave easily your alibi.
+2. You can gave easily your alibi. When giving your alibi you MUST PUT EXZCTLY "I was in ROOM from" in the setence. You can add small context before and after.
 3. Observations are secrets - reveal them one at a time
 4. Track mentally how much you've revealed - each piece makes you MORE paranoid and resistant: deny, deflect, act confused, claim poor memory
 5. Be precise with time window
+6. You can say things that are completly irrelevant (personal thoughts, things you have done during the day, your profession habits, ...)
 
 RESPONSE FORMAT (JSON only):
 {"response": "your guarded medieval response"}`;
 }
 
 const createMapper = (personData, sentence) => {
-  return `You are a fact extraction system. Your job is to identify when a sentence contains information that matches specific alibis or observations.
+  return `You are a fact mapper system. Your job is to identify when a sentence contains information that matches specific alibis or observations.
 
 PERSON DATA:
 ${JSON.stringify(personData, null, 2)}
@@ -129,30 +130,37 @@ ${JSON.stringify(personData, null, 2)}
 SENTENCE TO ANALYZE: "${sentence}"
 
 MATCHING RULES:
+Focus only on person and location. Time windows can be ignored.
+
 1. For ALIBI matching:
-   - The sentence must mention being at a specific LOCATION
-   - The sentence must indicate a TIME PERIOD (can be approximate)
-   - Location names must match exactly (case-insensitive)
-   - Time can be approximate (e.g., "around 8pm", "late evening", "during dinner" can match "20:00")
+   - Check if the sentence contains "I was in ROOM".
+   - Location names should match (case-insensitive, allow partial matches for reasonable variations)
+   - Return true if there's a match
 
 2. For OBSERVATION matching:
-   - The sentence must mention seeing/observing a specific PERSON
-   - The sentence must mention the LOCATION where they saw them
-   - Both person name and location must match exactly (case-insensitive)
-   - Time can be approximate
+   - Check if the sentence mentions seeing/observing a specific person at a location
+   - Both the person name and location must match entries in the observations data
+   - Return the indices of matching observations
 
-IMPORTANT: Only return true/indices if there is a clear, confident match. When in doubt, don't match.
+3. For TRASH = fallback:
+   - If neither alibi nor observations match
+   - Provide a brief summary (5-7 words maximum)
 
-Output format (JSON only, no explanation):
+IMPORTANT: Be reasonably flexible with matching. "I was occupied in the ROOM" should match an alibi about being "in the ROOM". Don't be overly strict about exact wording.
+
+Always return a complete JSON response:
+
 {
-  "alibi": boolean,
-  "observations": [array of observation indices that match]
-}`;
+  "alibi": true/false,
+  "observations": [array of matching observation indices, or empty array],
+  "trash": "brief summary if no match"
+}`
 };
 
 const createWatson = (plot) => {
   return `You are Watson, a medieval detective. Given a JSON murder case, explain how you reached the solution by:
 
+Write one small paragraph (one or two sentence long) for each parts:
 1. **Proving the murderer's alibi is false** - find witness observations that contradict their claimed location/time
 2. **Explaining the murder method** - weapon, location, timing from the solution
 3. **Revealing the motive** - use observations that support the provided motive
@@ -162,9 +170,9 @@ const createWatson = (plot) => {
 - Cite specific witness testimony that places them elsewhere
 - Connect observations to the motive
 
-**Medieval tone, no emojis, keep it simple.**
+**No emojis, no introduction sentence, no styling, keep it simple and get straight to the point.**
 
-OUTPUT (JSON): {text: "your deduction and explanation"}
+OUTPUT (JSON): {text: "your threee paragraphs"}
 
 INPUT: ${JSON.stringify(plot)}`
 };
