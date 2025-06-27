@@ -5,7 +5,7 @@ function createPicture(agent) {
     let image = picture.children[0]
     let text = picture.children[1]
 
-    image.style.backgroundImage = `url('${baseUrl}/static/assets/tokens/character/${agent.avatar}.png')`
+    image.style.backgroundImage = `url('static/assets/tokens/character/${agent.avatar}.png')`
     text.innerText = agent.suspect.name
 
     setFloating(picture)

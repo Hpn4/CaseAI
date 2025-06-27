@@ -1,7 +1,7 @@
 const apiKeyInput = document.getElementById('api_key_input')
 
 // Without trailing /
-const baseUrl = "CaseAI";
+const baseUrl = "";
 
 apiKeyInput.addEventListener('change', () => {
     backend.model.API_KEY = apiKeyInput.value
