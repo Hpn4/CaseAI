@@ -1,6 +1,9 @@
 function createNewspaper() {
     newspaperText.innerText = backend.plot.description
-    newspaperPicture.style.backgroundImage = `url('../../static/assets/tokens/character/dead_man1.png')`
+
+    const deadGender = {"M": "man", "F": "girl"}[backend.plot.victim.gender];
+    const deadIndex = Math.floor(Math.random(2));
+    newspaperPicture.style.backgroundImage = `url('${baseUrl}/static/assets/tokens/character/dead_${deadGender}${deadIndex}.png')`
 
     setFloating(newspaper)
 }
