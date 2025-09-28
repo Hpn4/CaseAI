@@ -6,8 +6,6 @@
 
 Investigate procedurally created cases, interrogate suspects powered by language models, and solve the crime before Watson — a symbolic AI.
 
----
-
 ## Project Overview
 
 CaseAI is a browser-based investigation game where each playthrough generates a new murder scenario:
@@ -21,8 +19,6 @@ It requires an **OpenAI API key** to function.
 
 ![Scene screen](docs/clues.png)
 
----
-
 ## How to Play
 
 1. [Open the game](https://hpn4.github.io/CaseAI).  
@@ -30,8 +26,6 @@ It requires an **OpenAI API key** to function.
 3. Explore the smithy map, click on suspects, and start conversations.  
 4. Collect evidence.  
 5. Deduce the culprit before Watson does.
-
----
 
 ## Tech Stack
 
